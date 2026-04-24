@@ -42,7 +42,7 @@
       "dist/credentials/VibetrackApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/Vibetrack/vibetrack.node.js"
+      "dist/nodes/Vibetrack/Vibetrack.node.js"
     ]
   },
   "devDependencies": {

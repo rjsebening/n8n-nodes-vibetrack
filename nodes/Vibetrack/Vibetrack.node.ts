@@ -13,7 +13,7 @@ export class Vibetrack implements INodeType {
 		defaults: {
 			name: 'Vibetrack',
 			// @ts-expect-error -- description required by linter
-			description: 'Interact with VibeTrack.com API (powered by joergsebening.de)',
+			description: 'Interact with VibeTrack.com (powered by joergsebening.de)',
 		},
 		inputs: ['main'],
 		outputs: ['main'],

@@ -1,0 +1,18 @@
+{
+  "node": "n8n-nodes-vibetrack",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": ["Marketing & Content"],
+  "resources": {
+    "credentialDocumentation": [
+      {
+        "url": "https://github.com/rjsebening/n8n-nodes-vibetrack/blob/main/CREDENTIALS.md"
+      }
+    ],
+    "primaryDocumentation": [
+      {
+        "url": "https://github.com/rjsebening/n8n-nodes-vibetrack/blob/main/README.md"
+      }
+    ]
+  }
+}

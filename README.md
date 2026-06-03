@@ -4,7 +4,7 @@
 ![Version](https://img.shields.io/badge/version-0.0.1-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-An n8n community node for the [Vibetrack](https://vibetrack.com) public API — read your projects and conversion events directly from your workflows.
+An n8n community node for the [Vibetrack](https://vibetrack.com) public API — read projects, triggers, conversions, and attribution data directly from your workflows.
 
 ---
 
@@ -16,12 +16,16 @@ An n8n community node for the [Vibetrack](https://vibetrack.com) public API — 
 
 ## Overview
 
-Vibetrack is a conversion and ad-tracking platform. This node wraps its public API-key endpoints so you can:
+Vibetrack is a conversion and ad-tracking platform. This node wraps the official Vibetrack API v1 so you can:
 
-- **List all projects** your API key has access to (id, name, plan type, domain, createdAt)
-- **List all conversion events** defined for a given project (id, name)
+- **Validate API credentials** and retrieve the authenticated user metadata
+- **List all projects** your API key has access to
+- **List online conversions** with date range, trigger, email, limit, and offset filters
+- **Create offline conversions** for active offline triggers
+- **List online and offline conversion triggers** for a project
+- **Aggregate attribution data** for campaign, ad set, or ad identifiers
 
-The public Vibetrack API is intentionally small — this node matches it 1:1. Authentication is a single API key, nothing else.
+The API version is part of the credential base URL, so future Vibetrack API versions can be configured without changing every node operation.
 
 ---
 
@@ -32,12 +36,29 @@ The public Vibetrack API is intentionally small — this node matches it 1:1. Au
 | ---------- | -------------------------------------------------- |
 | Get Many   | Lists all projects accessible via the API key      |
 
-### Resource: Conversion Event
-| Operation  | Description                                                |
-| ---------- | ---------------------------------------------------------- |
-| Get Many   | Lists all conversion events defined for a given project    |
+### Resource: Auth
+| Operation | Description                                      |
+| --------- | ------------------------------------------------ |
+| Validate  | Validates the API key and returns user metadata  |
 
-The *Project* dropdown on "Get Many Conversion Events" is populated automatically, so you can pick a project by name instead of pasting its ID.
+### Resource: Conversion Triggers
+| Operation        | Description                               |
+| ---------------- | ----------------------------------------- |
+| Get Many Online  | Lists active online conversion triggers   |
+| Get Many Offline | Lists active offline conversion triggers  |
+
+### Resource: Conversions
+| Operation       | Description                                        |
+| --------------- | -------------------------------------------------- |
+| Get Many Online | Lists online conversions for a project and filters |
+| Create Offline  | Sends one offline conversion                       |
+
+### Resource: Attribution
+| Operation | Description                                      |
+| --------- | ------------------------------------------------ |
+| Aggregate | Aggregates attribution data for selected IDs     |
+
+Project and trigger dropdowns are populated automatically, so you can pick entries by name instead of pasting IDs. JSON fields such as metadata and attribution mappings accept JSON expressions or plain JSON objects.
 
 ---
 
@@ -74,20 +95,20 @@ Create a new credential of type **Vibetrack API**:
 
 | Field        | Value                                        |
 | ------------ | -------------------------------------------- |
-| API Base URL | `https://app.vibetrack.com` (default)        |
+| API Base URL | `https://api.vibetrack.com/api/v1` (default) |
 | API Key      | Your personal Vibetrack API key              |
 
-n8n injects the API key automatically on every call. On save, the credential is verified against the Vibetrack API.
+n8n sends the API key as `X-API-Key`. To switch to a future API version, update the API Base URL in the credential.
 
 ---
 
-## Example: fetch all conversion events of a project
+## Example: fetch online conversions of a project
 
 1. Add a **Vibetrack** node
 2. Select Resource **Project**, Operation **Get Many** → you get the list of projects
-3. Add another **Vibetrack** node, Resource **Conversion Event**, Operation **Get Many**
-4. Pick the project from the dropdown (or wire the ID from the previous node via an expression)
-5. Execute — you receive an array like `[{ id, name }, …]`
+3. Add another **Vibetrack** node, Resource **Conversions**, Operation **Get Many Online**
+4. Pick the project from the dropdown, choose a date range, and optionally filter by trigger or email
+5. Execute — you receive the matching conversion records
 
 ---
 

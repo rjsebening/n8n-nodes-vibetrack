@@ -18,14 +18,15 @@ An n8n community node for the [Vibetrack](https://vibetrack.com) public API — 
 
 Vibetrack is a conversion and ad-tracking platform. This node wraps the official Vibetrack API v1 so you can:
 
-- **Validate API credentials** and retrieve the authenticated user metadata
+- **Retrieve authentication data** through the API Call resource
 - **List all projects** your API key has access to
 - **List online conversions** with date range, trigger, email, limit, and offset filters
 - **Create offline conversions** for active offline triggers
 - **List online and offline conversion triggers** for a project
 - **Aggregate attribution data** for campaign, ad set, or ad identifiers
-
-The API version is part of the credential base URL, so future Vibetrack API versions can be configured without changing every node operation.
+- **Manage outgoing webhooks** for conversion.created events
+- **Add or invite team members** for project or workspace access
+- **Start workflows from Vibetrack webhooks** with the Vibetrack Trigger node
 
 ---
 
@@ -36,10 +37,11 @@ The API version is part of the credential base URL, so future Vibetrack API vers
 | ---------- | -------------------------------------------------- |
 | Get Many   | Lists all projects accessible via the API key      |
 
-### Resource: Auth
-| Operation | Description                                      |
-| --------- | ------------------------------------------------ |
-| Validate  | Validates the API key and returns user metadata  |
+### Resource: API Call
+| Operation               | Description                                      |
+| ----------------------- | ------------------------------------------------ |
+| Get Authentication Data | Returns user metadata for the current API key    |
+| Make Request            | Makes a custom authenticated VibeTrack API call  |
 
 ### Resource: Conversion Triggers
 | Operation        | Description                               |
@@ -57,6 +59,21 @@ The API version is part of the credential base URL, so future Vibetrack API vers
 | Operation | Description                                      |
 | --------- | ------------------------------------------------ |
 | Aggregate | Aggregates attribution data for selected IDs     |
+
+### Resource: Team Member
+| Operation     | Description                                  |
+| ------------- | -------------------------------------------- |
+| Add or Invite | Adds an existing user or sends an invitation |
+
+### Resource: Webhooks
+| Operation  | Description                           |
+| ---------- | ------------------------------------- |
+| Get Many   | Lists project webhook endpoints       |
+| Create     | Creates a project webhook endpoint    |
+| Deactivate | Deactivates a project webhook endpoint |
+
+### Node: Vibetrack Trigger
+Starts a workflow when Vibetrack sends a `conversion.created` webhook for a selected project.
 
 Project and trigger dropdowns are populated automatically, so you can pick entries by name instead of pasting IDs. JSON fields such as metadata and attribution mappings accept JSON expressions or plain JSON objects.
 
@@ -95,10 +112,10 @@ Create a new credential of type **Vibetrack API**:
 
 | Field        | Value                                        |
 | ------------ | -------------------------------------------- |
-| API Base URL | `https://api.vibetrack.com/api/v1` (default) |
+| API Base URL | `https://api.vibetrack.com` (default)        |
 | API Key      | Your personal Vibetrack API key              |
 
-n8n sends the API key as `X-API-Key`. To switch to a future API version, update the API Base URL in the credential.
+n8n sends the API key as `X-API-Key`. API paths include `/api/v1` as defined by the official OpenAPI specification.
 
 ---
 

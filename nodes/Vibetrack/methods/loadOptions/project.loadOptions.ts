@@ -11,7 +11,7 @@ interface ProjectsResponse {
 export async function getProjects(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
   const response = (await vibetrackApiRequest.call(this, {
     method: 'GET',
-    path: '/projects',
+    path: '/api/v1/projects',
   })) as unknown as ProjectsResponse;
 
   return (response.projects || []).map((p) => ({
@@ -28,6 +28,14 @@ interface TriggerResponse {
   offlineTriggers?: Array<{
     id: string;
     name: string;
+  }>;
+}
+
+interface WebhookResponse {
+  webhooks?: Array<{
+    id: string;
+    url: string;
+    active?: boolean;
   }>;
 }
 
@@ -49,7 +57,7 @@ export async function getConversionTriggers(this: ILoadOptionsFunctions): Promis
 
   const response = (await vibetrackApiRequest.call(this, {
     method: 'GET',
-    path: '/conversion-triggers',
+    path: '/api/v1/conversion-triggers',
     qs: { projectId },
   })) as unknown as TriggerResponse;
 
@@ -62,9 +70,25 @@ export async function getOfflineTriggers(this: ILoadOptionsFunctions): Promise<I
 
   const response = (await vibetrackApiRequest.call(this, {
     method: 'GET',
-    path: '/offline-triggers',
+    path: '/api/v1/offline-triggers',
     qs: { projectId },
   })) as unknown as TriggerResponse;
 
   return mapTriggers(response.offlineTriggers);
+}
+
+export async function getWebhooks(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+  const projectId = getCurrentProjectId(this);
+  if (!projectId) return [];
+
+  const response = (await vibetrackApiRequest.call(this, {
+    method: 'GET',
+    path: '/api/v1/webhooks',
+    qs: { projectId },
+  })) as unknown as WebhookResponse;
+
+  return (response.webhooks || []).map((webhook) => ({
+    name: webhook.url,
+    value: webhook.id,
+  }));
 }

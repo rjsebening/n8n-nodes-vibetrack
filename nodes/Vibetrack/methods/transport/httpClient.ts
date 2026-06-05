@@ -8,10 +8,10 @@ import {
   JsonObject,
 } from 'n8n-workflow';
 
-const DEFAULT_BASE_URL = 'https://api.vibetrack.com/api/v1';
+const DEFAULT_BASE_URL = 'https://api.vibetrack.com';
 
 interface VibetrackApiRequestOptions {
-  method?: 'GET' | 'POST';
+  method?: 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT';
   path: string;
   qs?: IDataObject;
   body?: IDataObject;

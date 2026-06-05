@@ -1,9 +1,11 @@
 import { IExecuteFunctions, IDataObject, INodeExecutionData } from 'n8n-workflow';
-import * as auth from './auth/auth.actions';
+import { handleApiCall } from './apiCall/apiCall.actions';
 import * as attribution from './attribution/attribution.actions';
 import * as conversions from './conversions/conversions.actions';
 import * as conversionTriggers from './conversionTriggers/conversionTriggers.actions';
 import * as project from './project/project.actions';
+import * as teamMember from './teamMember/teamMember.actions';
+import * as webhooks from './webhooks/webhooks.actions';
 
 export async function router(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
   const items = this.getInputData();
@@ -15,8 +17,8 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
     try {
       let responseData: IDataObject | IDataObject[] = [];
 
-      if (resource === 'auth') {
-        if (operation === 'validate') responseData = await auth.validate.call(this);
+      if (resource === 'apiCall') {
+        responseData = (await handleApiCall.call(this, i, operation)) as IDataObject | IDataObject[];
       } else if (resource === 'attribution') {
         if (operation === 'aggregate') responseData = await attribution.aggregate.call(this, i);
       } else if (resource === 'conversionTriggers') {
@@ -27,6 +29,12 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
         if (operation === 'getManyOnline') responseData = await conversions.getManyOnline.call(this, i);
       } else if (resource === 'project') {
         if (operation === 'getAll') responseData = await project.getAll.call(this);
+      } else if (resource === 'teamMember') {
+        if (operation === 'addOrInvite') responseData = await teamMember.addOrInvite.call(this, i);
+      } else if (resource === 'webhooks') {
+        if (operation === 'create') responseData = await webhooks.create.call(this, i);
+        if (operation === 'deactivate') responseData = await webhooks.deactivate.call(this, i);
+        if (operation === 'getAll') responseData = await webhooks.getAll.call(this, i);
       }
 
       const executionData = this.helpers.returnJsonArray(responseData);

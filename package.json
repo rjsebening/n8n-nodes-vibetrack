@@ -4,22 +4,13 @@
   "description": "vibetrack.com n8n node",
   "license": "MIT",
   "homepage": "https://github.com/rjsebening/n8n-nodes-vibetrack#readme",
-  "keywords": [
-    "n8n-community-node-package",
-    "vibetrack",
-    "vibetrack.com"
-  ],
-  "author": {
-    "name": "Jörg Sebening",
-    "email": "dev@joerg-sebening.com"
-  },
+  "keywords": ["n8n-community-node-package", "vibetrack", "vibetrack.com"],
+  "author": { "name": "Jörg Sebening", "email": "dev@joerg-sebening.com" },
   "repository": {
     "type": "git",
     "url": "https://github.com/rjsebening/n8n-nodes-vibetrack.git"
   },
-  "bugs": {
-    "url": "https://github.com/rjsebening/n8n-nodes-vibetrack/issues"
-  },
+  "bugs": { "url": "https://github.com/rjsebening/n8n-nodes-vibetrack/issues" },
   "main": "index.js",
   "scripts": {
     "build": "npx rimraf dist && tsc && gulp build:icons",
@@ -30,19 +21,14 @@
     "release": "n8n-node release",
     "prepublishOnly": "n8n-node prerelease"
   },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
+  "files": ["dist", "README.md", "LICENSE"],
   "n8n": {
     "n8nNodesApiVersion": 1,
     "strict": true,
-    "credentials": [
-      "dist/credentials/VibetrackApi.credentials.js"
-    ],
+    "credentials": ["dist/credentials/VibetrackApi.credentials.js"],
     "nodes": [
-      "dist/nodes/Vibetrack/Vibetrack.node.js"
+      "dist/nodes/Vibetrack/Vibetrack.node.js",
+      "dist/nodes/VibetrackTrigger/VibetrackTrigger.node.js"
     ]
   },
   "devDependencies": {
@@ -58,10 +44,6 @@
     "rimraf": "^6.1.3",
     "typescript": "^5.9.3"
   },
-  "peerDependencies": {
-    "n8n-workflow": "*"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
+  "peerDependencies": { "n8n-workflow": "*" },
+  "publishConfig": { "access": "public" }
 }

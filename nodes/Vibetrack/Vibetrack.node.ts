@@ -4,14 +4,14 @@ import * as loadOptions from './methods/loadOptions';
 
 export class Vibetrack implements INodeType {
   description: INodeTypeDescription = {
-    displayName: 'Vibetrack',
+    displayName: 'VibeTrack',
     name: 'vibetrack',
     icon: 'file:vibetrack.svg',
     group: ['transform'],
     version: 1,
     description: 'Interact with VibeTrack.com API (powered by joergsebening.de)',
     defaults: {
-      name: 'Vibetrack',
+      name: 'VibeTrack',
       // @ts-expect-error -- description required by linter
       description: 'Interact with VibeTrack.com (powered by joergsebening.de)',
     },
@@ -23,7 +23,7 @@ export class Vibetrack implements INodeType {
         name: 'vibetrackApi',
         required: true,
         // @ts-expect-error -- description required by linter
-        description: 'Vibetrack API',
+        description: 'VibeTrack API',
       },
     ],
     properties: actions,

@@ -31,7 +31,7 @@ export async function aggregate(this: IExecuteFunctions, i: number): Promise<IDa
 
   return (await vibetrackApiRequest.call(this, {
     method: 'POST',
-    path: '/attribution/aggregate',
+    path: '/api/v1/attribution/aggregate',
     body,
   })) as IDataObject;
 }

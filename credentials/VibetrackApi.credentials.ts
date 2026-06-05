@@ -8,7 +8,7 @@ import type {
 
 export class VibetrackApi implements ICredentialType {
   name = 'vibetrackApi';
-  displayName = 'Vibetrack API';
+  displayName = 'VibeTrack API';
   documentationUrl = 'https://github.com/rjsebening/n8n-nodes-vibetrack#readme';
   icon: Icon = 'file:vibetrack.svg';
   authenticate: IAuthenticateGeneric = {
@@ -25,8 +25,8 @@ export class VibetrackApi implements ICredentialType {
       displayName: 'API Base URL',
       name: 'baseUrl',
       type: 'string',
-      default: 'https://api.vibetrack.com/api/v1',
-      placeholder: 'https://api.vibetrack.com/api/v1',
+      default: 'https://api.vibetrack.com',
+      placeholder: 'https://api.vibetrack.com',
       description: 'Base URL of the Vibetrack API',
     },
     {
@@ -42,7 +42,7 @@ export class VibetrackApi implements ICredentialType {
   test: ICredentialTestRequest = {
     request: {
       baseURL: '={{$credentials.baseUrl}}',
-      url: '/auth',
+      url: '/api/v1/auth',
       method: 'GET',
     },
   };

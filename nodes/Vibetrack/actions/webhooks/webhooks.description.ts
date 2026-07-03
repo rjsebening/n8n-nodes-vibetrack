@@ -15,20 +15,32 @@ export const webhooksOperations: INodeProperties[] = [
       {
         name: 'Create',
         value: 'create',
-        description: 'Create a project webhook endpoint',
-        action: 'Create a project webhook',
+        description: 'Create a webhook subscription',
+        action: 'Create a webhook subscription',
       },
       {
-        name: 'Deactivate',
+        name: 'Delete',
         value: 'deactivate',
-        description: 'Deactivate a project webhook endpoint',
-        action: 'Deactivate a project webhook',
+        description: 'Delete a webhook subscription',
+        action: 'Delete a webhook subscription',
+      },
+      {
+        name: 'Get',
+        value: 'get',
+        description: 'Retrieve a webhook subscription',
+        action: 'Get a webhook subscription',
       },
       {
         name: 'Get Many',
         value: 'getAll',
-        description: 'Retrieve many project webhooks',
-        action: 'Get many project webhooks',
+        description: 'Retrieve many webhook subscriptions',
+        action: 'Get many webhook subscriptions',
+      },
+      {
+        name: 'Update',
+        value: 'update',
+        description: 'Update a webhook subscription',
+        action: 'Update a webhook subscription',
       },
     ],
     default: 'getAll',
@@ -48,7 +60,7 @@ export const webhooksFields: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['webhooks'],
-        operation: ['create', 'deactivate', 'getAll'],
+        operation: ['create', 'deactivate', 'get', 'getAll', 'update'],
       },
     },
     description:
@@ -67,11 +79,11 @@ export const webhooksFields: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['webhooks'],
-        operation: ['deactivate'],
+        operation: ['deactivate', 'get', 'update'],
       },
     },
     description:
-      'Webhook endpoint to deactivate. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+      'Webhook subscription to use. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
   },
   {
     displayName: 'URL',
@@ -83,9 +95,72 @@ export const webhooksFields: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['webhooks'],
-        operation: ['create'],
+        operation: ['create', 'update'],
       },
     },
     description: 'Destination URL for conversion.created webhook events',
+  },
+  {
+    displayName: 'Type',
+    name: 'type',
+    type: 'options',
+    options: [
+      {
+        name: 'Conversion Created',
+        value: 'conversion.created',
+      },
+    ],
+    default: 'conversion.created',
+    displayOptions: {
+      show: {
+        resource: ['webhooks'],
+        operation: ['create', 'update'],
+      },
+    },
+    description: 'Webhook event type',
+  },
+  {
+    displayName: 'Trigger Name or ID',
+    name: 'triggerId',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getConversionTriggers',
+      loadOptionsDependsOn: ['projectId'],
+    },
+    default: '',
+    displayOptions: {
+      show: {
+        resource: ['webhooks'],
+        operation: ['create', 'update'],
+      },
+    },
+    description:
+      'Optional trigger filter. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+  },
+  {
+    displayName: 'Event Name',
+    name: 'eventName',
+    type: 'string',
+    default: '',
+    displayOptions: {
+      show: {
+        resource: ['webhooks'],
+        operation: ['create', 'update'],
+      },
+    },
+    description: 'Optional event name filter',
+  },
+  {
+    displayName: 'Active',
+    name: 'active',
+    type: 'boolean',
+    default: true,
+    displayOptions: {
+      show: {
+        resource: ['webhooks'],
+        operation: ['update'],
+      },
+    },
+    description: 'Whether the webhook subscription is active',
   },
 ];

@@ -34,7 +34,8 @@ interface TriggerResponse {
 interface WebhookResponse {
   webhooks?: Array<{
     id: string;
-    url: string;
+    hookUrl?: string;
+    url?: string;
     active?: boolean;
   }>;
 }
@@ -87,8 +88,12 @@ export async function getWebhooks(this: ILoadOptionsFunctions): Promise<INodePro
     qs: { projectId },
   })) as unknown as WebhookResponse;
 
-  return (response.webhooks || []).map((webhook) => ({
-    name: webhook.url,
-    value: webhook.id,
-  }));
+  return (response.webhooks || []).map((webhook) => {
+    const webhookUrl = webhook.hookUrl || webhook.url || webhook.id;
+
+    return {
+      name: webhookUrl,
+      value: webhook.id,
+    };
+  });
 }

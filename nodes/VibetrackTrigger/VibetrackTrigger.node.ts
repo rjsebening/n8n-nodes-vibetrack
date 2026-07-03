@@ -27,6 +27,7 @@ interface WebhookCreateResponse {
 interface WebhookListResponse {
   webhooks?: Array<{
     id?: string;
+    hookUrl?: string;
     url?: string;
     active?: boolean;
   }>;
@@ -43,7 +44,9 @@ async function getExistingWebhookId(
     qs: { projectId },
   })) as WebhookListResponse;
 
-  return (response.webhooks || []).find((webhook) => webhook.active !== false && webhook.url === webhookUrl)?.id;
+  return (response.webhooks || []).find(
+    (webhook) => webhook.active !== false && (webhook.hookUrl || webhook.url) === webhookUrl,
+  )?.id;
 }
 
 export class VibetrackTrigger implements INodeType {
@@ -115,7 +118,7 @@ export class VibetrackTrigger implements INodeType {
           path: '/api/v1/webhooks',
           body: {
             projectId,
-            url: webhookUrl,
+            hookUrl: webhookUrl,
           },
         })) as WebhookCreateResponse;
 

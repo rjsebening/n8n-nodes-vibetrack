@@ -24,6 +24,18 @@ export function parseJsonParameter(
   }
 }
 
+export function collectNonEmpty(group: IDataObject | undefined): IDataObject | undefined {
+  if (!group) return undefined;
+
+  const result: IDataObject = {};
+  for (const [key, value] of Object.entries(group)) {
+    if (value === undefined || value === null || value === '') continue;
+    result[key] = value;
+  }
+
+  return Object.keys(result).length > 0 ? result : undefined;
+}
+
 export function parseStringList(value: string): string[] {
   if (!value) return [];
 

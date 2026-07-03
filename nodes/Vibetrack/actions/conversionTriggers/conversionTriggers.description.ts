@@ -58,6 +58,10 @@ export const conversionTriggersFields: INodeProperties[] = [
         value: '',
       },
       {
+        name: 'API',
+        value: 'api',
+      },
+      {
         name: 'Zapier',
         value: 'zapier',
       },

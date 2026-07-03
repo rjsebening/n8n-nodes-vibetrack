@@ -34,7 +34,9 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
       } else if (resource === 'webhooks') {
         if (operation === 'create') responseData = await webhooks.create.call(this, i);
         if (operation === 'deactivate') responseData = await webhooks.deactivate.call(this, i);
+        if (operation === 'get') responseData = await webhooks.get.call(this, i);
         if (operation === 'getAll') responseData = await webhooks.getAll.call(this, i);
+        if (operation === 'update') responseData = await webhooks.update.call(this, i);
       }
 
       const executionData = this.helpers.returnJsonArray(responseData);

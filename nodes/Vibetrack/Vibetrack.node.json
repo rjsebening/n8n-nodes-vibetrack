@@ -1,5 +1,5 @@
 {
-  "node": "n8n-nodes-vibetrack",
+  "node": "n8n-nodes-vibetrack.vibetrack",
   "nodeVersion": "1.0",
   "codexVersion": "1.0",
   "categories": ["Marketing & Content"],

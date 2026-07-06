@@ -1,6 +1,6 @@
 {
-  "node": "n8n-nodes-vibetrack.VibetrackTrigger",
-  "nodeVersion": "1.0.0",
+  "node": "n8n-nodes-vibetrack.vibetrackTrigger",
+  "nodeVersion": "1.0",
   "codexVersion": "1.0",
   "categories": ["Marketing & Content"],
   "resources": {

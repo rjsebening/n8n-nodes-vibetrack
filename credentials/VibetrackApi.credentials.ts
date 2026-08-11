@@ -10,7 +10,10 @@ export class VibetrackApi implements ICredentialType {
   name = 'vibetrackApi';
   displayName = 'VibeTrack API';
   documentationUrl = 'https://github.com/rjsebening/n8n-nodes-vibetrack#readme';
-  icon: Icon = 'file:vibetrack.svg';
+  icon: Icon = {
+    light: 'file:vibetrack-light.svg',
+    dark: 'file:vibetrack-dark.svg',
+  };
   authenticate: IAuthenticateGeneric = {
     type: 'generic',
     properties: {

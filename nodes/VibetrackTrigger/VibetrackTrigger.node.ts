@@ -6,6 +6,7 @@ import {
   INodeTypeDescription,
   IWebhookFunctions,
   IWebhookResponseData,
+  NodeConnectionTypes,
 } from 'n8n-workflow';
 import { vibetrackApiRequest } from '../Vibetrack/methods/transport/httpClient';
 import * as loadOptions from '../Vibetrack/methods/loadOptions';
@@ -53,17 +54,21 @@ export class VibetrackTrigger implements INodeType {
   description: INodeTypeDescription = {
     displayName: 'VibeTrack Trigger',
     name: 'vibetrackTrigger',
-    icon: 'file:../Vibetrack/vibetrack.svg',
+    icon: {
+      light: 'file:../Vibetrack/vibetrack-light.svg',
+      dark: 'file:../Vibetrack/vibetrack-dark.svg',
+    },
     group: ['trigger'],
     version: 1,
     description: 'Interact with VibeTrack.com (powered by joergsebening.de)',
+    subtitle: 'conversion.created',
     defaults: {
       name: 'VibeTrack Trigger',
       // @ts-expect-error -- description required by linter
       description: 'Interact with VibeTrack.com (powered by joergsebening.de)',
     },
     inputs: [],
-    outputs: ['main'],
+    outputs: [NodeConnectionTypes.Main],
     credentials: [
       {
         name: 'vibetrackApi',
@@ -83,7 +88,6 @@ export class VibetrackTrigger implements INodeType {
       },
     ],
     properties: triggerProperties,
-    usableAsTool: true,
   };
 
   methods = {

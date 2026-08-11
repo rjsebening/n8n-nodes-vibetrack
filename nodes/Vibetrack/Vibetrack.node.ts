@@ -1,4 +1,10 @@
-import { IExecuteFunctions, INodeExecutionData, INodeType, INodeTypeDescription } from 'n8n-workflow';
+import {
+  IExecuteFunctions,
+  INodeExecutionData,
+  INodeType,
+  INodeTypeDescription,
+  NodeConnectionTypes,
+} from 'n8n-workflow';
 import { actions, router } from './actions';
 import * as loadOptions from './methods/loadOptions';
 
@@ -6,17 +12,21 @@ export class Vibetrack implements INodeType {
   description: INodeTypeDescription = {
     displayName: 'VibeTrack',
     name: 'vibetrack',
-    icon: 'file:vibetrack.svg',
+    icon: {
+      light: 'file:vibetrack-light.svg',
+      dark: 'file:vibetrack-dark.svg',
+    },
     group: ['transform'],
     version: 1,
     description: 'Interact with VibeTrack.com API (powered by joergsebening.de)',
+    subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
     defaults: {
       name: 'VibeTrack',
       // @ts-expect-error -- description required by linter
       description: 'Interact with VibeTrack.com (powered by joergsebening.de)',
     },
-    inputs: ['main'],
-    outputs: ['main'],
+    inputs: [NodeConnectionTypes.Main],
+    outputs: [NodeConnectionTypes.Main],
 
     credentials: [
       {

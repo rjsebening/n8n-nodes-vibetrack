@@ -18,12 +18,11 @@ export const actions: INodeProperties[] = [
     options: [
       { name: 'API Call', value: 'apiCall', description: 'Make a custom API call to the VibeTrack API' },
       { name: 'Attribution', value: 'attribution' },
-      // eslint-disable-next-line n8n-nodes-base/node-param-resource-with-plural-option
-      { name: 'Conversion Triggers', value: 'conversionTriggers' },
-      { name: 'Conversions', value: 'conversions' },
+      { name: 'Conversion', value: 'conversions' },
+      { name: 'Conversion Trigger', value: 'conversionTriggers' },
       { name: 'Project', value: 'project' },
       { name: 'Team Member', value: 'teamMember' },
-      { name: 'Webhooks', value: 'webhooks' },
+      { name: 'Webhook', value: 'webhooks' },
     ],
     default: 'project',
   },

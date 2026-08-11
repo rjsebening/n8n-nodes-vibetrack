@@ -1,4 +1,11 @@
-import { IExecuteFunctions, IDataObject, INodeExecutionData } from 'n8n-workflow';
+import {
+  IExecuteFunctions,
+  IDataObject,
+  INodeExecutionData,
+  JsonObject,
+  NodeApiError,
+  NodeOperationError,
+} from 'n8n-workflow';
 import { handleApiCall } from './apiCall/apiCall.actions';
 import * as attribution from './attribution/attribution.actions';
 import * as conversions from './conversions/conversions.actions';
@@ -50,7 +57,9 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
         returnData.push({ json: { error: errorMessage } });
         continue;
       }
-      throw error;
+      throw error instanceof NodeApiError || error instanceof NodeOperationError
+        ? error
+        : new NodeApiError(this.getNode(), error as JsonObject);
     }
   }
 

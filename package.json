@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-vibetrack",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "vibetrack.com n8n node",
   "license": "MIT",
   "homepage": "https://github.com/rjsebening/n8n-nodes-vibetrack#readme",

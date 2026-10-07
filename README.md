@@ -19,13 +19,15 @@ An n8n community node for the [Vibetrack](https://vibetrack.com) public API — 
 Vibetrack is a conversion and ad-tracking platform. This node wraps the official Vibetrack API v1 so you can:
 
 - **Retrieve authentication data** through the API Call resource
-- **List all projects** your API key has access to
-- **List online conversions** with date range, trigger, email, limit, and offset filters
-- **Create offline conversions** for active offline triggers
-- **List online and offline conversion triggers** for a project
+- **List all projects** your API key has access to (Editor rights or higher)
+- **List online conversions** with date range, trigger, email, unique, limit, and offset filters
+- **Create, list and get offline conversions** incl. UTM/VibeTrack campaign fields and click IDs
+- **Create, get, update and list conversion triggers** (online page rules and offline triggers)
+- **Manage domains** of a project and check the tracking installation
+- **Manage Magic Links** on verified custom domains
 - **Aggregate attribution data** for campaign, ad set, or ad identifiers
 - **Manage outgoing webhooks** for conversion.created events
-- **Add or invite team members** for project or workspace access
+- **List, add, invite and remove team members** for project or workspace access
 - **Start workflows from Vibetrack webhooks** with the Vibetrack Trigger node
 
 ---
@@ -44,16 +46,36 @@ Vibetrack is a conversion and ad-tracking platform. This node wraps the official
 | Make Request            | Makes a custom authenticated VibeTrack API call  |
 
 ### Resource: Conversion Triggers
-| Operation        | Description                               |
-| ---------------- | ----------------------------------------- |
-| Get Many Online  | Lists active online conversion triggers   |
-| Get Many Offline | Lists active offline conversion triggers  |
+| Operation        | Description                                                      |
+| ---------------- | ---------------------------------------------------------------- |
+| Create           | Creates an online trigger with a page rule or an offline trigger |
+| Get              | Returns one trigger, including deactivated triggers              |
+| Get Many         | Lists online and offline triggers (optionally incl. inactive)    |
+| Get Many Offline | Lists active offline conversion triggers                         |
+| Update           | Updates a trigger; set Active to false to deactivate it          |
 
 ### Resource: Conversions
-| Operation       | Description                                        |
-| --------------- | -------------------------------------------------- |
-| Get Many Online | Lists online conversions for a project and filters |
-| Create Offline  | Sends one offline conversion                       |
+| Operation        | Description                                                 |
+| ---------------- | ----------------------------------------------------------- |
+| Create Offline   | Sends one offline conversion                                |
+| Get Many Offline | Lists offline conversions (trigger, status, external ID, date range) |
+| Get Many Online  | Lists online conversions for a project and filters          |
+| Get Offline      | Returns one offline conversion with all data                |
+
+### Resource: Domain
+| Operation      | Description                                                      |
+| -------------- | ---------------------------------------------------------------- |
+| Check Tracking | Checks that the VibeTrack tracker and cookie script are installed |
+| Create         | Adds a website domain to a project                               |
+| Get Many       | Lists the domains of a project                                   |
+
+### Resource: Magic Link
+| Operation | Description                                        |
+| --------- | -------------------------------------------------- |
+| Create    | Creates a Magic Link on a verified custom domain   |
+| Get       | Returns one Magic Link                             |
+| Get Many  | Lists all Magic Links of a project, newest first   |
+| Update    | Updates a Magic Link; set Active to false to deactivate it |
 
 ### Resource: Attribution
 | Operation | Description                                      |
@@ -61,16 +83,20 @@ Vibetrack is a conversion and ad-tracking platform. This node wraps the official
 | Aggregate | Aggregates attribution data for selected IDs     |
 
 ### Resource: Team Member
-| Operation     | Description                                  |
-| ------------- | -------------------------------------------- |
-| Add or Invite | Adds an existing user or sends an invitation |
+| Operation     | Description                                              |
+| ------------- | -------------------------------------------------------- |
+| Add or Invite | Adds an existing user or sends an invitation             |
+| Get Many      | Lists members and pending invitations                    |
+| Remove        | Removes a user's access or revokes a pending invitation  |
 
 ### Resource: Webhooks
 | Operation  | Description                           |
 | ---------- | ------------------------------------- |
+| Create     | Creates a project webhook endpoint (HTTPS, public address, no redirects) |
+| Delete     | Deletes a project webhook endpoint    |
+| Get        | Returns one webhook endpoint          |
 | Get Many   | Lists project webhook endpoints       |
-| Create     | Creates a project webhook endpoint    |
-| Deactivate | Deactivates a project webhook endpoint |
+| Update     | Updates a project webhook endpoint    |
 
 ### Node: Vibetrack Trigger
 Starts a workflow when Vibetrack sends a `conversion.created` webhook for a selected project.
@@ -124,7 +150,7 @@ n8n sends the API key as `X-API-Key`. API paths include `/api/v1` as defined by 
 1. Add a **Vibetrack** node
 2. Select Resource **Project**, Operation **Get Many** → you get the list of projects
 3. Add another **Vibetrack** node, Resource **Conversions**, Operation **Get Many Online**
-4. Pick the project from the dropdown, choose a date range, and optionally filter by trigger or email
+4. Pick the project from the dropdown, optionally choose a date range and filter by trigger or email. By default only unique conversions are returned (like in the VibeTrack app); disable **Unique Only** to get all conversions
 5. Execute — you receive the matching conversion records
 
 ---

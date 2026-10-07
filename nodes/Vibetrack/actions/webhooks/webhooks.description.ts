@@ -98,7 +98,8 @@ export const webhooksFields: INodeProperties[] = [
         operation: ['create', 'update'],
       },
     },
-    description: 'Destination URL for conversion.created webhook events',
+    description:
+      'Destination URL for webhook events. Must use HTTPS and resolve to a public address. Redirects are not followed: a 3xx response counts as a failed delivery.',
   },
   {
     displayName: 'Type',

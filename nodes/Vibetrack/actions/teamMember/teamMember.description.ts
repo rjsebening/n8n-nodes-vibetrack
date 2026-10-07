@@ -18,6 +18,18 @@ export const teamMemberOperations: INodeProperties[] = [
         description: 'Add an existing user or send an invitation',
         action: 'Add or invite a team member',
       },
+      {
+        name: 'Get Many',
+        value: 'getAll',
+        description: 'Retrieve the team of a project or workspace, including pending invitations',
+        action: 'Get many team members',
+      },
+      {
+        name: 'Remove',
+        value: 'remove',
+        description: "Remove a user's access or revoke a pending invitation",
+        action: 'Remove a team member or revoke an invitation',
+      },
     ],
     default: 'addOrInvite',
   },
@@ -43,10 +55,10 @@ export const teamMemberFields: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['teamMember'],
-        operation: ['addOrInvite'],
+        operation: ['addOrInvite', 'getAll', 'remove'],
       },
     },
-    description: 'Whether to grant project-level or workspace-level access',
+    description: 'Whether to work on project-level or workspace-level access',
   },
   {
     displayName: 'Project Name or ID',
@@ -60,12 +72,12 @@ export const teamMemberFields: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['teamMember'],
-        operation: ['addOrInvite'],
+        operation: ['addOrInvite', 'getAll', 'remove'],
         scope: ['project'],
       },
     },
     description:
-      'Project to grant access to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+      'Project to use. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
   },
   {
     displayName: 'Workspace ID',
@@ -76,11 +88,11 @@ export const teamMemberFields: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['teamMember'],
-        operation: ['addOrInvite'],
+        operation: ['addOrInvite', 'getAll', 'remove'],
         scope: ['workspace'],
       },
     },
-    description: 'Workspace ID to grant access to',
+    description: 'ID of the workspace to use',
   },
   {
     displayName: 'Email',
@@ -124,5 +136,61 @@ export const teamMemberFields: INodeProperties[] = [
       },
     },
     description: 'Access level to grant. Owner access cannot be granted through the public API.',
+  },
+  {
+    displayName: 'Remove',
+    name: 'removeTarget',
+    type: 'options',
+    options: [
+      {
+        name: 'Member',
+        value: 'member',
+        description: "Remove an existing user's access",
+      },
+      {
+        name: 'Invitation',
+        value: 'invitation',
+        description: 'Revoke a pending invitation',
+      },
+    ],
+    default: 'member',
+    displayOptions: {
+      show: {
+        resource: ['teamMember'],
+        operation: ['remove'],
+      },
+    },
+    description:
+      'What to remove. Owners and the API key user cannot be removed. Users with workspace access must be removed from the workspace.',
+  },
+  {
+    displayName: 'User ID',
+    name: 'userId',
+    type: 'string',
+    default: '',
+    required: true,
+    displayOptions: {
+      show: {
+        resource: ['teamMember'],
+        operation: ['remove'],
+        removeTarget: ['member'],
+      },
+    },
+    description: 'ID of the user to remove (see Get Many)',
+  },
+  {
+    displayName: 'Invitation ID',
+    name: 'invitationId',
+    type: 'string',
+    default: '',
+    required: true,
+    displayOptions: {
+      show: {
+        resource: ['teamMember'],
+        operation: ['remove'],
+        removeTarget: ['invitation'],
+      },
+    },
+    description: 'ID of the pending invitation to revoke (see Get Many)',
   },
 ];

@@ -15,7 +15,7 @@ export const projectOperations: INodeProperties[] = [
       {
         name: 'Get Many',
         value: 'getAll',
-        description: 'Retrieve many projects',
+        description: 'Retrieve many projects the API key user can access with Editor rights or higher',
         action: 'Get many projects',
       },
     ],

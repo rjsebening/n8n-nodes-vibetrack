@@ -24,6 +24,7 @@ interface TriggerResponse {
   conversionTriggers?: Array<{
     id: string;
     name: string;
+    type?: string;
   }>;
   offlineTriggers?: Array<{
     id: string;
@@ -62,7 +63,7 @@ export async function getConversionTriggers(this: ILoadOptionsFunctions): Promis
     qs: { projectId },
   })) as unknown as TriggerResponse;
 
-  return mapTriggers(response.conversionTriggers);
+  return mapTriggers((response.conversionTriggers || []).filter((trigger) => trigger.type !== 'OFFLINE'));
 }
 
 export async function getOfflineTriggers(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
@@ -96,4 +97,64 @@ export async function getWebhooks(this: ILoadOptionsFunctions): Promise<INodePro
       value: webhook.id,
     };
   });
+}
+
+export async function getAllConversionTriggers(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+  const projectId = getCurrentProjectId(this);
+  if (!projectId) return [];
+
+  const response = (await vibetrackApiRequest.call(this, {
+    method: 'GET',
+    path: '/api/v1/conversion-triggers',
+    qs: { projectId, includeInactive: true },
+  })) as unknown as TriggerResponse;
+
+  return mapTriggers(response.conversionTriggers);
+}
+
+interface DomainResponse {
+  domains?: Array<{
+    id: string;
+    url: string;
+  }>;
+}
+
+export async function getDomains(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+  const projectId = getCurrentProjectId(this);
+  if (!projectId) return [];
+
+  const response = (await vibetrackApiRequest.call(this, {
+    method: 'GET',
+    path: '/api/v1/domains',
+    qs: { projectId },
+  })) as unknown as DomainResponse;
+
+  return (response.domains || []).map((domain) => ({
+    name: domain.url,
+    value: domain.id,
+  }));
+}
+
+interface MagicLinkResponse {
+  magicLinks?: Array<{
+    id: string;
+    name: string;
+    url?: string;
+  }>;
+}
+
+export async function getMagicLinks(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+  const projectId = getCurrentProjectId(this);
+  if (!projectId) return [];
+
+  const response = (await vibetrackApiRequest.call(this, {
+    method: 'GET',
+    path: '/api/v1/magic-links',
+    qs: { projectId },
+  })) as unknown as MagicLinkResponse;
+
+  return (response.magicLinks || []).map((magicLink) => ({
+    name: magicLink.url ? `${magicLink.name} (${magicLink.url})` : magicLink.name,
+    value: magicLink.id,
+  }));
 }

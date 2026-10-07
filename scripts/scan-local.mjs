@@ -8,20 +8,16 @@
  * export, however, takes a local directory. Importing it means we inherit the scanner's exact
  * rule wiring instead of duplicating it in a hand-written flat config that would drift.
  *
- * The scanner is installed into an isolated tools directory rather than as a devDependency.
- * Two reasons:
- *   - It pins typescript@7.0.2, which its own @typescript-eslint/parser refuses to load. As a
- *     devDependency npm nests both under the scanner, the parser resolves the pinned TS 7 and
- *     the scan dies. An isolated tree hoists typescript@6 (pinned below) to its root, which is
- *     what the parser actually finds under npx - and what makes the scan work.
- *   - It drags eslint 9 + a second TypeScript into the tree that `npm ci` builds and publishes.
+ * The scanner is installed into an isolated tools directory rather than as a devDependency,
+ * because it drags eslint 9 + a second TypeScript into the tree that `npm ci` builds and
+ * publishes. The install is refreshed automatically whenever SCANNER_VERSION changes.
  *
  * Two legs, mirroring the scanner:
  *   source - package.json + {nodes,credentials} sources
  *   dist   - dist/ JS + package.json, i.e. what actually ends up in the npm tarball
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -29,25 +25,40 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const packageDir = path.resolve(scriptDir, '..');
 const toolsDir = path.join(scriptDir, '.scan-tools');
 
+const SCANNER_VERSION = '0.38.0';
+
 const TOOLS_MANIFEST = {
 	name: 'vibetrack-scan-tools',
 	private: true,
 	description: 'Isolated install of the n8n community-package scanner. Not part of the package.',
 	dependencies: {
-		'@n8n/scan-community-package': '0.32.0',
-		// Pinned so it hoists ahead of the scanner's own typescript@7.0.2, which the parser rejects.
-		typescript: '6.0.3',
+		// Since 0.38.0 the scanner aliases typescript to @typescript/typescript6 itself, so the
+		// former typescript@6 pin (to dodge its typescript@7 dependency) is no longer needed.
+		'@n8n/scan-community-package': SCANNER_VERSION,
 	},
 };
 
-const scannerEntry = path.join(
-	toolsDir,
-	'node_modules/@n8n/scan-community-package/scanner/scanner.mjs',
-);
+const scannerDir = path.join(toolsDir, 'node_modules/@n8n/scan-community-package');
+const scannerEntry = path.join(scannerDir, 'scanner/scanner.mjs');
 
-if (!existsSync(scannerEntry)) {
-	console.log('Installing the n8n community-package scanner into scripts/.scan-tools ...');
-	execFileSync('mkdir', ['-p', toolsDir]);
+function installedScannerVersion() {
+	try {
+		return JSON.parse(readFileSync(path.join(scannerDir, 'package.json'), 'utf8')).version;
+	} catch {
+		return undefined;
+	}
+}
+
+const installedVersion = installedScannerVersion();
+
+if (!existsSync(scannerEntry) || installedVersion !== SCANNER_VERSION) {
+	console.log(
+		installedVersion
+			? `Updating the n8n community-package scanner ${installedVersion} -> ${SCANNER_VERSION} ...`
+			: `Installing the n8n community-package scanner ${SCANNER_VERSION} into scripts/.scan-tools ...`,
+	);
+	rmSync(toolsDir, { recursive: true, force: true });
+	mkdirSync(toolsDir, { recursive: true });
 	writeFileSync(path.join(toolsDir, 'package.json'), `${JSON.stringify(TOOLS_MANIFEST, null, 2)}\n`);
 	execFileSync('npm', ['install', '--silent', '--no-audit', '--no-fund'], {
 		cwd: toolsDir,
